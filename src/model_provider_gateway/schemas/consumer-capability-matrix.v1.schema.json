@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lightcoloror/model-provider-gateway/schemas/consumer-capability-matrix.v1.schema.json",
+  "title": "Model Provider Gateway consumer capability matrix v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "gateway_version",
+    "canonical_gateway_commit",
+    "canonical_gateway_commit_role",
+    "semantic_baseline",
+    "capability_policies",
+    "consumers",
+    "compatibility_summary",
+    "invariants",
+    "matrix_revision"
+  ],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.consumer_capability_matrix.v1"},
+    "gateway_version": {"type": "string", "minLength": 1},
+    "canonical_gateway_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "canonical_gateway_commit_role": {"const": "historical_provenance_evidence_only"},
+    "matrix_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "semantic_baseline": {"$ref": "#/$defs/interfaceContract"},
+    "capability_policies": {
+      "type": "array",
+      "minItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["capability", "priority", "shared_control_plane", "shared_execution", "execution_mode", "default_location", "remote_candidate_requires"],
+        "properties": {
+          "capability": {"enum": ["text", "vision", "embedding", "asr", "ocr", "tts"]},
+          "priority": {"enum": ["P0", "P1", "P2"]},
+          "shared_control_plane": {"const": "enabled"},
+          "shared_execution": {"enum": ["enabled", "blocked"]},
+          "execution_mode": {"enum": ["provider_route", "owner_adapter"]},
+          "default_location": {"enum": ["explicit_route", "local_first"]},
+          "blocked_reason": {"type": "string"},
+          "remote_candidate_requires": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "additionalProperties": false
+      }
+    },
+    "consumers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "consumer_id",
+          "consumer",
+          "repository",
+          "observed_commit",
+          "integration_status",
+          "adapter_module",
+          "evidence",
+          "source_ref",
+          "interface_contract",
+          "compatibility_assessment",
+          "capabilities",
+          "proposal",
+          "gateway_contract"
+        ],
+        "properties": {
+          "consumer_id": {"type": "string", "minLength": 1},
+          "consumer": {"type": "string", "minLength": 1},
+          "repository": {"type": "string", "minLength": 1},
+          "observed_commit": {"type": ["string", "null"], "pattern": "^[0-9a-f]{40}$"},
+          "integration_status": {
+            "enum": ["real_adapter", "fixture_only", "planned", "blocked", "not_applicable"]
+          },
+          "adapter_module": {"type": ["string", "null"]},
+          "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "source_ref": {"$ref": "#/$defs/sourceRef"},
+          "interface_contract": {"$ref": "#/$defs/interfaceContract"},
+          "compatibility_assessment": {"$ref": "#/$defs/compatibilityAssessment"},
+          "capabilities": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text", "vision", "embedding", "asr", "ocr", "tts"],
+            "properties": {
+              "text": {"$ref": "#/$defs/consumerCapability"},
+              "vision": {"$ref": "#/$defs/consumerCapability"},
+              "embedding": {"$ref": "#/$defs/consumerCapability"},
+              "asr": {"$ref": "#/$defs/consumerCapability"},
+              "ocr": {"$ref": "#/$defs/consumerCapability"},
+              "tts": {"$ref": "#/$defs/consumerCapability"}
+            }
+          },
+          "proposal": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source_module", "target_landing", "verification_command", "implementation_status", "required_changes"],
+            "properties": {
+              "source_module": {"type": "string", "minLength": 1},
+              "target_landing": {"type": "string", "minLength": 1},
+              "verification_command": {"type": "string", "minLength": 1},
+              "implementation_status": {"enum": ["no_code_change_required", "owner_review_pending", "proposal_only"]},
+              "required_changes": {"type": "array", "items": {"type": "string", "minLength": 1}}
+            }
+          },
+          "gateway_contract": {"type": "object"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "compatibility_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification_basis", "counts", "blocking_consumers", "all_consumers_asserted", "commit_or_hash_is_runtime_gate"],
+      "properties": {
+        "classification_basis": {"const": "semantic_contract_not_git_identity"},
+        "counts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["compatible_verified", "compatible_provenance_stale", "unasserted", "real_incompatible", "blocked_by_owner"],
+          "properties": {
+            "compatible_verified": {"type": "integer", "minimum": 0},
+            "compatible_provenance_stale": {"type": "integer", "minimum": 0},
+            "unasserted": {"type": "integer", "minimum": 0},
+            "real_incompatible": {"type": "integer", "minimum": 0},
+            "blocked_by_owner": {"type": "integer", "minimum": 0}
+          }
+        },
+        "blocking_consumers": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "all_consumers_asserted": {"type": "boolean"},
+        "commit_or_hash_is_runtime_gate": {"const": false}
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_protocol_adapter",
+        "arbitrary_urls_allowed",
+        "silent_fallback_allowed",
+        "automatic_retry_allowed",
+        "saving_profile_is_consent",
+        "real_provider_called",
+        "file_upload_requires_exact_manifest_and_user_approval",
+        "owner_adapter_execution_requires_native_gate",
+        "normalized_owner_receipt_grants_execution_authority"
+      ],
+      "properties": {
+        "provider_protocol_adapter": {"const": "litellm_only"},
+        "arbitrary_urls_allowed": {"const": false},
+        "silent_fallback_allowed": {"const": false},
+        "automatic_retry_allowed": {"const": false},
+        "saving_profile_is_consent": {"const": false},
+        "real_provider_called": {"const": false},
+        "file_upload_requires_exact_manifest_and_user_approval": {"const": true},
+        "owner_adapter_execution_requires_native_gate": {"const": true},
+        "normalized_owner_receipt_grants_execution_authority": {"const": false}
+      }
+    }
+  },
+  "$defs": {
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "observed_commit", "adapter_path", "adapter_sha256", "test_path", "test_sha256", "tracked_files_state", "commit_is_compatibility_gate", "verification_status", "verification_result", "receipt_refs"],
+      "properties": {
+        "kind": {"const": "working_tree_snapshot"},
+        "observed_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "adapter_path": {"type": "string", "minLength": 1},
+        "adapter_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "test_path": {"type": "string", "minLength": 1},
+        "test_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "tracked_files_state": {"enum": ["clean", "modified"]},
+        "commit_is_compatibility_gate": {"const": false},
+        "verification_status": {"enum": ["passed", "partial_environment_blocked", "failed_real_incompatible"]},
+        "verification_result": {"type": "string", "minLength": 1},
+        "receipt_refs": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        }
+      }
+    },
+    "interfaceContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["http_api_schema", "adapter_schema", "adapter_request_schema", "execution_request_schema", "execution_result_schema", "consent_schema", "error_fields", "silent_fallback_allowed", "automatic_retry_allowed"],
+      "properties": {
+        "transport": {"type": "string", "minLength": 1},
+        "http_api_schema": {"type": ["string", "null"]},
+        "adapter_schema": {"const": "model_provider_gateway.adapter_contract.v2"},
+        "adapter_request_schema": {"const": "model_provider_gateway.adapter_request.v2"},
+        "execution_request_schema": {"const": "model_provider_gateway.execution_request.v1"},
+        "execution_result_schema": {"const": "model_provider_gateway.execution_result.v1"},
+        "consent_schema": {"const": "model_provider_gateway.consent_manifest.v2"},
+        "error_fields": {"type": "array", "items": {"enum": ["error_class", "error_message", "retryable"]}, "minItems": 3, "uniqueItems": true},
+        "owner_gate": {"type": "string", "minLength": 1},
+        "silent_fallback_allowed": {"const": false},
+        "automatic_retry_allowed": {"const": false}
+      }
+    },
+    "compatibilityAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "facts", "blocking_reasons", "basis"],
+      "properties": {
+        "status": {"enum": ["compatible_verified", "compatible_provenance_stale", "unasserted", "real_incompatible", "blocked_by_owner"]},
+        "basis": {"const": "semantic_contract_plus_current_source_snapshot"},
+        "blocking_reasons": {"type": "array", "items": {"type": "string"}},
+        "facts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["asserted", "schema_matches", "capability_matches", "safety_matches", "exact_release_gate", "provenance_current", "owner_blocked"],
+          "properties": {
+            "asserted": {"type": "boolean"},
+            "schema_matches": {"type": "boolean"},
+            "capability_matches": {"type": "boolean"},
+            "safety_matches": {"type": "boolean"},
+            "exact_release_gate": {"type": "boolean"},
+            "provenance_current": {"type": "boolean"},
+            "owner_blocked": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "consumerCapability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "execution_location"],
+      "properties": {
+        "status": {"enum": ["real_adapter", "fixture_only", "planned", "blocked", "not_applicable"]},
+        "execution_location": {"type": "string", "minLength": 1},
+        "gateway_task": {"type": "string", "minLength": 1},
+        "owner_adapter": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

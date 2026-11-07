@@ -1,0 +1,66 @@
+{
+  "schema": "model_provider_gateway.consumer_capability_expectations.v1",
+  "canonical_gateway_commit": "c5f3ec49644453e0cddb56350e3b243b49e0f7da",
+  "canonical_gateway_commit_role": "historical_provenance_evidence_only",
+  "shared_execution": {
+    "enabled": ["text", "vision"],
+    "blocked": ["embedding", "asr", "ocr", "tts"],
+    "local_first": ["embedding", "asr", "ocr", "tts"]
+  },
+  "consumers": {
+    "translation_desk": {
+      "integration_status": "fixture_only",
+      "compatibility_status": "compatible_verified",
+      "adapter_sha256": "c803ca7167996601917621cf6416163257987d4eb7526b0b9f7273a5954a8bd9",
+      "text": "fixture_only",
+      "vision": "not_applicable"
+    },
+    "vkp": {
+      "integration_status": "real_adapter",
+      "compatibility_status": "compatible_verified",
+      "adapter_sha256": "b7232136083f4f5348a49bb7b64943d2dec906616030db3376dd4203eb0af26c",
+      "text": "real_adapter",
+      "vision": "real_adapter",
+      "asr": "real_adapter",
+      "ocr": "real_adapter"
+    },
+    "mvp_video_pipeline": {
+      "integration_status": "real_adapter",
+      "compatibility_status": "compatible_verified",
+      "adapter_sha256": "42dccdc856f2a7fa2abdce8779650026fd2d9a3efc811169e78b15c35b89c1cc",
+      "text": "real_adapter",
+      "vision": "real_adapter",
+      "tts": "fixture_only"
+    },
+    "content_studio": {
+      "integration_status": "real_adapter",
+      "compatibility_status": "compatible_verified",
+      "adapter_sha256": "719ef501d6b9dbaf64ab315993fb0e0ea80b961235275bead43eeaf00570da70",
+      "text": "real_adapter",
+      "vision": "real_adapter"
+    },
+    "research_content_production": {
+      "integration_status": "real_adapter",
+      "compatibility_status": "compatible_verified",
+      "adapter_sha256": "130814af16f27ced19c4e52f77a774f9eae95c67aeba055ef16a674de30885d3",
+      "text": "not_applicable",
+      "vision": "not_applicable"
+    },
+    "qrp": {
+      "integration_status": "real_adapter",
+      "compatibility_status": "compatible_verified",
+      "adapter_sha256": "e4db33d8391d689b56c9ac6204c588a6d716b0a5f2809b11d1e6576730b0b455",
+      "text": "real_adapter",
+      "vision": "real_adapter",
+      "embedding": "fixture_only"
+    },
+    "arw": {
+      "integration_status": "real_adapter",
+      "compatibility_status": "compatible_verified",
+      "adapter_sha256": "a4e078ebd0829aa4d51ffea51670ffbd0763c5a43a2a4494ae072459972c463b",
+      "text": "real_adapter",
+      "vision": "real_adapter",
+      "embedding": "fixture_only"
+    }
+  }
+}

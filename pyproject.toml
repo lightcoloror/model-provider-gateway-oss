@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=78", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "model-provider-gateway"
+version = "0.3.0"
+description = "Fail-closed LiteLLM provider catalog, consent, execution, and adapter contracts"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "AGPL-3.0-only"
+authors = [{name = "lightcoloror"}]
+dependencies = [
+  "jsonschema>=4.23,<5",
+  "keyring>=25,<26",
+  "packaging>=24,<26"
+]
+
+[project.optional-dependencies]
+execution = ["litellm>=1.81.7,<2"]
+proxy = ["litellm[proxy]>=1.81.7,<2"]
+ui = [
+  "fastapi>=0.115,<1",
+  "uvicorn>=0.34,<1",
+]
+dev = [
+  "build>=1.2,<2",
+  "httpx>=0.28,<1",
+  "pytest>=8.3,<9",
+  "ruff>=0.12,<1"
+]
+
+[project.scripts]
+model-provider-gateway = "model_provider_gateway.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+model_provider_gateway = ["schemas/*.json", "static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

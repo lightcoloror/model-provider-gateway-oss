@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lightcoloror/model-provider-gateway/schemas/owner-capability-receipt.v1.schema.json",
+  "title": "Model Provider Gateway owner capability receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "status", "plan_id", "plan_revision", "consumer_id", "capability", "adapter_id",
+    "input_manifest_hash", "owner_gate_receipt_hash", "external_io_performed", "provider_called",
+    "automatic_fallback_used", "output", "error"
+  ],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.owner_capability_receipt.v1"},
+    "status": {"enum": ["validated_fixture", "completed", "failed", "blocked"]},
+    "plan_id": {"type": "string"},
+    "plan_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "consumer_id": {"type": "string"},
+    "capability": {"enum": ["asr", "ocr", "tts", "embedding"]},
+    "adapter_id": {"type": "string"},
+    "input_manifest_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "owner_gate_receipt_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "external_io_performed": {"const": false},
+    "provider_called": {"const": false},
+    "automatic_fallback_used": {"const": false},
+    "output": {"type": ["object", "null"]},
+    "error": {"type": ["object", "null"]}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["validated_fixture", "completed"]}}},
+      "then": {
+        "properties": {
+          "output": {"type": "object"},
+          "error": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"enum": ["failed", "blocked"]}}},
+      "then": {
+        "properties": {
+          "output": {"type": "null"},
+          "error": {"type": "object"}
+        }
+      }
+    }
+  ]
+}

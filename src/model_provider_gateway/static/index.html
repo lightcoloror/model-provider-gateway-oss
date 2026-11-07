@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'" />
+    <title>模型供应商控制台</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">MODEL PROVIDER GATEWAY</p>
+        <h1>模型供应商</h1>
+      </div>
+      <div class="runtime-status" aria-label="运行状态">
+        <span class="status-dot status-ready"></span>
+        <span>配置台已就绪</span>
+        <span class="separator"></span>
+        <span>模型服务按需启动</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro-band">
+        <div>
+          <h2>选供应商，填入 API Key</h2>
+          <p>请求地址、协议、默认模型与能力已由审核预设填好。保存配置不会调用模型。</p>
+        </div>
+        <button id="mock-smoke" class="button button-secondary" type="button">运行本地自检</button>
+      </section>
+
+      <section class="workspace" aria-label="供应商配置">
+        <div class="provider-column">
+          <div class="section-heading">
+            <div>
+              <p class="step">01</p>
+              <h2>选择供应商</h2>
+            </div>
+            <div class="provider-filters">
+              <input id="provider-search" class="search" type="search" placeholder="搜索供应商、模型或别名" aria-label="搜索供应商" />
+              <select id="capability-filter" class="capability-filter" aria-label="按能力筛选供应商">
+                <option value="">全部能力</option>
+                <option value="text">文本</option>
+                <option value="vision">视觉</option>
+                <option value="asr">ASR</option>
+                <option value="ocr">OCR</option>
+                <option value="tts">TTS</option>
+                <option value="embedding">Embedding</option>
+              </select>
+            </div>
+          </div>
+          <div id="provider-grid" class="provider-grid" aria-live="polite"></div>
+        </div>
+
+        <aside class="setup-panel" aria-label="配置选中供应商">
+          <div class="section-heading compact">
+            <div>
+              <p class="step">02</p>
+              <h2>保存配置</h2>
+            </div>
+            <span class="privacy-mark">Key 不写入文件</span>
+          </div>
+          <form id="setup-form">
+            <div class="selected-provider">
+              <span id="selected-swatch" class="provider-swatch"></span>
+              <div>
+                <strong id="selected-label">请选择供应商</strong>
+                <span id="selected-destination">审核预设</span>
+              </div>
+              <span id="setup-mode-badge" class="setup-mode-badge">Key-only</span>
+            </div>
+
+            <label id="api-key-label" for="api-key">API Key</label>
+            <div class="secret-input">
+              <input id="api-key" name="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="粘贴供应商 API Key" required />
+              <button id="toggle-key" class="button-text" type="button" aria-label="显示或隐藏 API Key">显示</button>
+            </div>
+
+            <label for="model-preset">默认模型</label>
+            <select id="model-preset" name="model-preset"></select>
+
+            <div id="provider-fields" class="provider-fields" aria-live="polite"></div>
+
+            <div id="provider-blocked" class="provider-blocked" hidden></div>
+
+            <label for="profile-id">配置名称</label>
+            <input id="profile-id" name="profile-id" type="text" maxlength="64" placeholder="自动生成" />
+
+            <details class="advanced">
+              <summary>查看预填字段</summary>
+              <dl>
+                <div><dt>请求地址</dt><dd id="advanced-base-url">—</dd></div>
+                <div><dt>协议</dt><dd id="advanced-protocol">—</dd></div>
+                <div><dt>能力</dt><dd id="advanced-capabilities">—</dd></div>
+                <div><dt>分组</dt><dd id="advanced-group">—</dd></div>
+                <div><dt>来源</dt><dd id="advanced-source">—</dd></div>
+                <div><dt>重试</dt><dd>0 次，无静默切换</dd></div>
+              </dl>
+            </details>
+
+            <div class="safety-note">
+              <strong>保存后的状态</strong>
+              <span>仅建立密钥引用和 Provider Profile。资料上传、联网测试与模型调用仍需单独确认。</span>
+            </div>
+            <button id="save-profile" class="button button-primary" type="submit">安全保存</button>
+          </form>
+        </aside>
+      </section>
+
+      <section class="profiles-section" aria-label="已保存配置">
+        <div class="section-heading">
+          <div>
+            <p class="step">03</p>
+            <h2>已保存配置</h2>
+          </div>
+          <span id="profile-count" class="count">0 项</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>配置</th><th>供应商</th><th>模型</th><th>能力</th><th>凭据</th></tr></thead>
+            <tbody id="profiles-body"></tbody>
+          </table>
+          <p id="profiles-empty" class="empty-state">还没有保存配置。上方选择供应商并填入 API Key 即可。</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

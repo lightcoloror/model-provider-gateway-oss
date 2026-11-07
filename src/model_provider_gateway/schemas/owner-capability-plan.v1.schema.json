@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lightcoloror/model-provider-gateway/schemas/owner-capability-plan.v1.schema.json",
+  "title": "Model Provider Gateway owner capability plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "plan_id", "consumer_id", "capability", "adapter_id", "execution_mode",
+    "input_manifest_hash", "options_hash", "execution_authorized", "provider_upload_authorized",
+    "owner_native_gate_required", "automatic_fallback_allowed", "automatic_retry_allowed", "plan_revision"
+  ],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.owner_capability_plan.v1"},
+    "plan_id": {"type": "string", "minLength": 8, "maxLength": 128, "pattern": "^[A-Za-z0-9._:-]+$"},
+    "consumer_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "capability": {"enum": ["asr", "ocr", "tts", "embedding"]},
+    "adapter_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "execution_mode": {"const": "owner_adapter"},
+    "input_manifest_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "options_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "execution_authorized": {"const": false},
+    "provider_upload_authorized": {"const": false},
+    "owner_native_gate_required": {"const": true},
+    "automatic_fallback_allowed": {"const": false},
+    "automatic_retry_allowed": {"const": false},
+    "plan_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lightcoloror/model-provider-gateway/schemas/online-provider-validation-package.v1.schema.json",
+  "title": "Model Provider Gateway online Provider validation preparation package v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "dispatch_id", "status", "generated_at", "purpose", "fixture",
+    "candidate_count", "selected_candidate_id", "candidates", "safety", "approval_document", "package_sha256"
+  ],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.online_provider_validation_package.v1"},
+    "dispatch_id": {"const": "CLOSURE-20260810-ONLINE-PROVIDER-VALIDATION-01"},
+    "status": {"const": "awaiting_explicit_provider_selection"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "purpose": {"type": "string", "minLength": 1},
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path", "preview", "sha256", "mime_type", "bytes", "data_type"],
+      "properties": {
+        "relative_path": {"const": "fixture/public-summary-input.txt"},
+        "preview": {"type": "string", "minLength": 1, "maxLength": 500},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "mime_type": {"const": "text/plain"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "data_type": {"const": "public_synthetic_text"}
+      }
+    },
+    "candidate_count": {"type": "integer", "minimum": 1},
+    "selected_candidate_id": {"type": "null"},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "candidate_id", "selection_status", "credential_status", "provider_id", "model",
+          "endpoint", "destination", "timeout_seconds", "max_calls", "max_cost_usd",
+          "fallback_enabled", "profile_path", "route_path", "consent_draft_path",
+          "execution_request_draft_path", "command_path", "command_sha256"
+        ],
+        "properties": {
+          "candidate_id": {"type": "string", "minLength": 1},
+          "selection_status": {"const": "candidate_unselected"},
+          "credential_status": {"const": "not_checked"},
+          "provider_id": {"type": "string", "minLength": 1},
+          "model": {"type": "string", "minLength": 1},
+          "endpoint": {"type": "string", "pattern": "^https://"},
+          "destination": {"type": "string", "minLength": 1},
+          "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 120},
+          "max_calls": {"const": 1},
+          "max_cost_usd": {"type": "number", "exclusiveMinimum": 0, "maximum": 0.1},
+          "fallback_enabled": {"const": false},
+          "profile_path": {"type": "string", "minLength": 1},
+          "route_path": {"type": "string", "minLength": 1},
+          "consent_draft_path": {"type": "string", "minLength": 1},
+          "execution_request_draft_path": {"type": "string", "minLength": 1},
+          "command_path": {"type": "string", "minLength": 1}
+          ,"command_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "approval_document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relative_path", "sha256", "bytes"],
+      "properties": {
+        "relative_path": {"const": "APPROVAL-PACKAGE.md"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "real_provider_call_performed", "upload_performed", "cost_incurred_usd",
+        "credential_read_performed", "active_consent_created", "automatic_retry_enabled",
+        "automatic_fallback_enabled"
+      ],
+      "properties": {
+        "real_provider_call_performed": {"const": false},
+        "upload_performed": {"const": false},
+        "cost_incurred_usd": {"const": 0.0},
+        "credential_read_performed": {"const": false},
+        "active_consent_created": {"const": false},
+        "automatic_retry_enabled": {"const": false},
+        "automatic_fallback_enabled": {"const": false}
+      }
+    },
+    "package_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lightcoloror/model-provider-gateway/schemas/owner-capability-truth.v1.schema.json",
+  "title": "Model Provider Gateway owner capability truth matrix v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "capabilities", "matrix_revision"],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.owner_capability_truth.v1"},
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asr", "ocr", "tts", "embedding"],
+      "properties": {
+        "asr": {"$ref": "#/$defs/truth"},
+        "ocr": {"$ref": "#/$defs/truth"},
+        "tts": {"$ref": "#/$defs/truth"},
+        "embedding": {"$ref": "#/$defs/truth"}
+      }
+    },
+    "matrix_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "truth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capability", "adapter_id", "contract_ready", "runtime_ready", "fresh_e2e_pass",
+        "real_usage_proof", "current_online", "status", "reason", "last_receipt_hash",
+        "last_executed_at",
+        "provider_called", "automatic_fallback_used"
+      ],
+      "properties": {
+        "capability": {"enum": ["asr", "ocr", "tts", "embedding"]},
+        "adapter_id": {"type": "string"},
+        "contract_ready": {"type": "boolean"},
+        "runtime_ready": {"type": "boolean"},
+        "fresh_e2e_pass": {"type": "boolean"},
+        "real_usage_proof": {"type": "boolean"},
+        "current_online": {"type": "boolean"},
+        "status": {"enum": ["ready_local_on_demand", "configured_unverified", "blocked", "unavailable"]},
+        "reason": {"type": "string"},
+        "last_receipt_hash": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+        "last_executed_at": {"type": ["string", "null"], "format": "date-time"},
+        "provider_called": {"const": false},
+        "automatic_fallback_used": {"const": false}
+      }
+    }
+  }
+}

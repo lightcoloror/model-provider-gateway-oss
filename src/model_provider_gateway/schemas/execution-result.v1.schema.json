@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lightcoloror/model-provider-gateway/schemas/execution-result.v1.schema.json",
+  "title": "Model Provider Gateway execution-result.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "ok", "status", "request_id", "provider_id", "model", "capability",
+    "route_hash", "consent_hash", "input_manifest_hash", "usage", "cost",
+    "latency_ms", "error_class", "error_message", "retryable", "artifact_refs",
+    "output", "redacted_audit"
+  ],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.execution_result.v1"},
+    "ok": {"type": "boolean"},
+    "status": {"enum": ["completed", "failed", "blocked"]},
+    "request_id": {"type": ["string", "null"]},
+    "provider_id": {"type": ["string", "null"]},
+    "model": {"type": ["string", "null"]},
+    "capability": {"type": ["string", "null"]},
+    "route_hash": {"type": ["string", "null"]},
+    "consent_hash": {"type": ["string", "null"]},
+    "input_manifest_hash": {"type": ["string", "null"]},
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "prompt_tokens", "completion_tokens", "total_tokens"],
+      "properties": {
+        "status": {"enum": ["reported", "unknown"]},
+        "prompt_tokens": {"type": ["integer", "null"]},
+        "completion_tokens": {"type": ["integer", "null"]},
+        "total_tokens": {"type": ["integer", "null"]}
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "estimated_usd", "reserved_ceiling_usd"],
+      "properties": {
+        "status": {"enum": ["reported", "unknown"]},
+        "estimated_usd": {"type": ["number", "null"]},
+        "reserved_ceiling_usd": {"type": ["number", "null"]}
+      }
+    },
+    "latency_ms": {"type": "integer", "minimum": 0},
+    "error_class": {"type": ["string", "null"]},
+    "error_message": {"type": ["string", "null"]},
+    "retryable": {"type": "boolean"},
+    "artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sha256", "bytes", "mime_type", "data_type", "purpose"],
+        "properties": {
+          "sha256": {"type": "string"},
+          "bytes": {"type": "integer"},
+          "mime_type": {"type": "string"},
+          "data_type": {"type": "string"},
+          "purpose": {"type": "string"}
+        }
+      }
+    },
+    "output": {
+      "anyOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["text"],
+          "properties": {"text": {"type": "string"}}
+        }
+      ]
+    },
+    "redacted_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consumer_id", "task", "profile_id", "transport", "input_paths_logged",
+        "input_content_logged", "secret_logged", "automatic_fallback_used"
+      ],
+      "properties": {
+        "consumer_id": {"type": ["string", "null"]},
+        "task": {"type": ["string", "null"]},
+        "profile_id": {"type": ["string", "null"]},
+        "transport": {"type": "string"},
+        "input_paths_logged": {"const": false},
+        "input_content_logged": {"const": false},
+        "secret_logged": {"const": false},
+        "automatic_fallback_used": {"const": false}
+      }
+    }
+  }
+}

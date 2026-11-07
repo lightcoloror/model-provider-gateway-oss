@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Explicit local derived text owner gate v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "scope", "plan_id", "plan_revision", "capability", "adapter_id", "input_manifest_hash", "local_execution_authorized", "provider_call_authorized", "external_io_authorized", "automatic_fallback_allowed", "automatic_retry_allowed", "gate_revision", "local_consent_ref"],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.owner_capability_gate.v2"},
+    "scope": {"const": "user_authorized_local"},
+    "plan_id": {"type": "string"},
+    "plan_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "capability": {"const": "embedding"},
+    "adapter_id": {"const": "sentence-transformers-local"},
+    "input_manifest_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "local_execution_authorized": {"const": true},
+    "provider_call_authorized": {"const": false},
+    "external_io_authorized": {"const": false},
+    "automatic_fallback_allowed": {"const": false},
+    "automatic_retry_allowed": {"const": false},
+    "gate_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "local_consent_ref": {
+      "type": "object", "additionalProperties": false, "required": ["path", "revision"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "maxLength": 4096},
+        "revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

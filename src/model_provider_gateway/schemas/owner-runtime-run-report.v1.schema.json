@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lightcoloror/model-provider-gateway/schemas/owner-runtime-run-report.v1.schema.json",
+  "title": "Model Provider Gateway local owner runtime run report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "executed_at", "status", "capability", "adapter_id", "plan_revision", "input_manifest_hash",
+    "gate_revision", "receipt_hash", "runtime", "output_refs", "error", "report_revision"
+  ],
+  "properties": {
+    "schema": {"const": "model_provider_gateway.owner_runtime_run_report.v1"},
+    "executed_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["completed", "blocked", "failed"]},
+    "capability": {"enum": ["asr", "ocr", "tts", "embedding"]},
+    "adapter_id": {"type": "string"},
+    "plan_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "input_manifest_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gate_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "receipt_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "execution_location", "runtime_id", "latency_ms", "provider_called", "external_io_performed",
+        "automatic_retry_count", "automatic_fallback_used"
+      ],
+      "properties": {
+        "execution_location": {"const": "local"},
+        "runtime_id": {"type": "string", "minLength": 1, "maxLength": 128},
+        "latency_ms": {"type": "integer", "minimum": 0},
+        "provider_called": {"const": false},
+        "external_io_performed": {"const": false},
+        "automatic_retry_count": {"const": 0},
+        "automatic_fallback_used": {"const": false}
+      }
+    },
+    "output_refs": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^[A-Za-z0-9._/-]+$", "maxLength": 256}
+    },
+    "error": {"type": ["object", "null"]},
+    "report_revision": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}
