@@ -1,0 +1,53 @@
+{
+  "schema_version": "project-artifact-lifecycle-adapter.v1",
+  "profile_id": "build_dist",
+  "producer_tool_id": "model-provider-gateway",
+  "owner_lane": "local-tools",
+  "repository_root_parents": 1,
+  "synthetic_only": true,
+  "allowed_roots": [
+    "fixtures/artifact-lifecycle"
+  ],
+  "default": {
+    "artifact_role": "unknown",
+    "lifecycle_state": "candidate",
+    "referenced_by": ["unknown_reference"],
+    "sensitivity": "unknown",
+    "pin": true
+  },
+  "rules": [
+    {
+      "path": "build/candidate-wheel.whl",
+      "artifact_role": "duplicate_or_obsolete",
+      "lifecycle_state": "failed",
+      "referenced_by": [],
+      "sensitivity": "synthetic",
+      "pin": false,
+      "rebuild_proof": {"status": "verified", "command": "python -m build --wheel --outdir build", "input_hashes": ["synthetic"], "dependency_lock": "pyproject.toml", "verification_ref": "runtime/capability-receipt.json"}
+    },
+    {
+      "path": "dist/candidate-sdist.tar.gz",
+      "artifact_role": "duplicate_or_obsolete",
+      "lifecycle_state": "superseded",
+      "referenced_by": [],
+      "sensitivity": "synthetic",
+      "pin": false,
+      "rebuild_proof": {"status": "verified", "command": "python -m build --sdist --outdir dist", "input_hashes": ["synthetic"], "dependency_lock": "pyproject.toml", "verification_ref": "runtime/capability-receipt.json"}
+    },
+    {
+      "path": "test-cache/pytest.cache",
+      "artifact_role": "cache_build_test_temp",
+      "lifecycle_state": "failed",
+      "referenced_by": [],
+      "sensitivity": "synthetic",
+      "pin": false,
+      "rebuild_proof": {"status": "verified", "command": "pytest", "input_hashes": ["synthetic"], "dependency_lock": "pyproject.toml", "verification_ref": "runtime/capability-receipt.json"}
+    },
+    {"path": "runtime/provider-profile.ref", "artifact_role": "secret_or_account_state", "lifecycle_state": "verified", "referenced_by": ["route-plan.json"], "sensitivity": "secret_reference", "pin": true},
+    {"path": "runtime/route-plan.json", "artifact_role": "runtime_state", "lifecycle_state": "verified", "referenced_by": ["execution-ledger.json"], "sensitivity": "synthetic", "pin": true},
+    {"path": "runtime/consent.json", "artifact_role": "authoritative_input", "lifecycle_state": "verified", "referenced_by": ["execution-ledger.json"], "sensitivity": "synthetic", "pin": true},
+    {"path": "runtime/execution-ledger.json", "artifact_role": "evidence_receipt_manifest", "lifecycle_state": "verified", "referenced_by": ["capability-receipt.json"], "sensitivity": "synthetic", "pin": true},
+    {"path": "runtime/capability-receipt.json", "artifact_role": "evidence_receipt_manifest", "lifecycle_state": "verified", "referenced_by": ["closure"], "sensitivity": "synthetic", "pin": true},
+    {"path": "runtime/license-evidence.txt", "artifact_role": "evidence_receipt_manifest", "lifecycle_state": "verified", "referenced_by": ["provenance"], "sensitivity": "synthetic", "pin": true}
+  ]
+}
