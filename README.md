@@ -66,3 +66,8 @@ The existing `python -m pytest -q` source-checkout check remains optional: it
 needs a compatible `.[dev]` environment and the five baseline pytest cases are
 not rerun or claimed by this integration. Source-checkout support only: no
 installed Gateway console entry is added for the lifecycle adapter.
+
+
+## Existing PowerShell build wrapper source
+
+See [the unchanged build wrapper source and operator prerequisites](docs/build-wrapper-source.md). It depends on the caller working directory and current Python environment; the earlier Windows runtime refusal was not retried and no successful wrapper build is claimed.
